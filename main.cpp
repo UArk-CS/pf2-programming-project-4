@@ -3,8 +3,6 @@
 #include "StringStack.h"
 using namespace std;
 
-//void checkHTMLSyntax(string &htmlFile);
-
 int main() {
 
     ifstream din;
@@ -15,48 +13,64 @@ int main() {
     dout.open("output.html");
     if (din.fail()) return -1;
 
+    bool isTag = false;
+    bool isClosing = false;
+    string tagName;
+
     char last = ' ';
     char ch = din.get();
-    while (ch != EOF)
-    {
-        if (ch == '<' && last != '\n')
-        {
+    while (ch != EOF) {
+        if (ch == '<' && last != '\n') {
+
+            isTag = true;
+            tagName = "";
+
             dout << endl;
             last = '\n';
+
         }
-        if (ch != '\n' && ch != '\r')
-        {
+
+        if (ch != '\n' && ch != '\r') {
+
+            if (isTag && ch != '<' && ch != '>') {
+
+                if (ch == '/' && last == '<') {
+                    isClosing = true;
+                } else {
+                    tagName += ch;
+                }
+
+            }
+
             dout << ch;
             last = ch;
+
         }
-        if (ch == '>' && last != '\n')
-        {
+
+        if (ch == '>' && last != '\n') {
+
+            isTag = false;
+            cout << tagName;
+            cout << endl;
+
+            if (isClosing) {
+                // if matches top of stack, pop
+                // otherwise print error
+            } else {
+                // push
+            }
+
             dout << endl;
             last = '\n';
         }
+
         ch = din.get();
+
     }
+
     din.close();
     dout.close();
+
     return 0;
 
 }
-
-//void checkHTMLSyntax(string &htmlFile) {
-//
-//    string test;
-//
-//    ifstream din;
-//    din.open(htmlFile);
-//    if (din.fail()) {
-//        return;
-//    }
-//
-//    if (din.is_open()) {
-//
-//        din >> test;
-//        cout << test;
-//
-//    }
-//
-//}
